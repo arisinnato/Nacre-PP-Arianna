@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Tu conexión local
+#conexión local
 SQLALCHEMY_DATABASE_URL = "postgresql://arisinnato@localhost:5432/nacre_db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
