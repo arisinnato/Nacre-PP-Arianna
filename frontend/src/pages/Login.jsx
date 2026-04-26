@@ -21,8 +21,8 @@ export default function Login() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.access_token);
-        // navigate('/dashboard'); // Por implementar
-        alert('Login exitoso. Bienvenido a Nacre.');
+
+        navigate('/dashboard'); 
       } else {
         const data = await response.json();
         setError(data.detail || 'Credenciales inválidas');
