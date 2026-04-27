@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from passlib.context import CryptContext
 
-SECRET_KEY = "tu_super_secreto_nacre_muy_seguro"
+SECRET_KEY = "nacre_lo_maximo"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 100000
 
