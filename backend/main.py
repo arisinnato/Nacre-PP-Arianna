@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import models
 from database import engine, SessionLocal
-from routes import auth_routes, products_routes, sales_routes # Importamos tus 3 carpetas nuevas
+from routes import auth_routes, products_routes, sales_routes
 
 app = FastAPI(title="Nacre API")
 
