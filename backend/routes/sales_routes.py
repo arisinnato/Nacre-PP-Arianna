@@ -31,6 +31,5 @@ def create_sale(sale_data: dict, db: Session = Depends(get_db)):
     
     db.add(new_sale)
     db.commit()
-    # db.refresh(new_sale)
     
     return {"message": "¡Venta registrada con éxito!"}

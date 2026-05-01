@@ -4,7 +4,6 @@ const Sales = () => {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Cargar el historial de ventas desde el backend
   useEffect(() => {
     fetch('http://127.0.0.1:8000/api/sales')
       .then((response) => response.json())
@@ -27,11 +26,13 @@ const totalRevenue = Array.isArray(sales) ? sales.reduce((acc, sale) => acc + sa
         <p className="text-gray-400 text-sm tracking-wide">Historial de transacciones y flujo de ingresos de Nacre.</p>
       </header>
       
-      {/* Resumen de ingresos rápidos */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div className="bg-white p-8 border border-gray-100 shadow-sm rounded-sm">
           <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2">Ingresos Totales</p>
-          <p className="text-3xl font-serif">${totalRevenue.toFixed(2)}</p>
+          <p className="text-3xl font-serif text-[#598B2C]">
+            <span className="text-xl mr-0.5">$</span>
+            {totalRevenue.toFixed(2)}
+          </p>
         </div>
         <div className="bg-white p-8 border border-gray-100 shadow-sm rounded-sm">
           <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2">Piezas Vendidas</p>
@@ -39,7 +40,6 @@ const totalRevenue = Array.isArray(sales) ? sales.reduce((acc, sale) => acc + sa
         </div>
       </div>
 
-      {/* Tabla de Historial */}
       <div className="bg-white rounded-sm border border-gray-100 shadow-sm overflow-hidden text-sm">
         {loading ? (
           <p className="p-8 text-center text-gray-400 italic">Cargando historial...</p>
@@ -62,7 +62,10 @@ const totalRevenue = Array.isArray(sales) ? sales.reduce((acc, sale) => acc + sa
                     </td>
                     <td className="p-4 font-mono text-xs text-gray-400">#00{sale.id}</td>
                     <td className="p-4">{sale.quantity} und.</td>
-                    <td className="p-4 text-right font-medium">${sale.total_price.toFixed(2)}</td>
+                    <td className="p-4 text-right font-medium text-[#598B2C]">
+                      <span className="text-xs mr-0.5">$</span>
+                      {sale.total_price.toFixed(2)}
+                    </td>
                   </tr>
                 ))
               ) : (

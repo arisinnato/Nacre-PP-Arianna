@@ -23,16 +23,16 @@ app.include_router(sales_routes.router)
 @app.get("/")
 def read_root():
     return {
-        "message": "Bienvenida a la API de Nacre, Ari",
+        "message": "Bienvenida a la API de Nacre",
         "status": "Online",
-        "version": "2.0 (Modular)"
+        "version": "2.0"
     }
 
 def seed_categories():
     db = SessionLocal()
     try:
         if db.query(models.Category).count() == 0:
-            print("🌱 Sembrando categorías iniciales para Nacre...")
+            print("Sembrando categorías iniciales para Nacre...")
             for name in ["Collares", "Pulseras", "Zarcillos"]:
                 db.add(models.Category(name=name))
             db.commit()

@@ -14,6 +14,7 @@ class ProductOut(BaseModel):
     description: Optional[str]
     price: float
     stock: int
+    image_url: Optional[str] = None
     category_id: Optional[int] 
     category: Optional[CategoryOut] = None
     class Config:
