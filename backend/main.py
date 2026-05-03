@@ -4,9 +4,15 @@ import models
 from database import engine, SessionLocal
 from routes import auth_routes, products_routes, sales_routes
 
-app = FastAPI(title="Nacre API")
+from contextlib import asynccontextmanager
 
-models.Base.metadata.create_all(bind=engine)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    models.Base.metadata.create_all(bind=engine)
+    seed_categories()
+    yield
+
+app = FastAPI(title="Nacre API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
