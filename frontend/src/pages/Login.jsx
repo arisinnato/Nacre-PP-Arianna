@@ -20,7 +20,8 @@ export default function Login() {
           body: JSON.stringify({ username, password })
         });
         
-        const data = await response.json();
+       const text = await response.text(); 
+       const data = text ? JSON.parse(text) : {};
 
         if (response.ok) {
           localStorage.setItem('token', data.access_token);
@@ -34,7 +35,7 @@ export default function Login() {
         setError('Error al conectar con el servidor');
       }
     };
-    
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
       <div className="bg-white p-10 shadow-2xl w-full max-w-md border border-gray-100">
