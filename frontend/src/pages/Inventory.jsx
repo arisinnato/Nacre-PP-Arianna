@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../apiConfig';
 
 const Inventory = () => {
   const [products, setProducts] = useState([]);
@@ -17,14 +18,15 @@ const Inventory = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/categories')
+    fetch(`${API_BASE_URL}/categories`)
       .then(res => res.json())
       .then(data => setCategories(data))
       .catch(err => console.error("Error cargando categorías:", err));
   }, []);
 
+
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/products')
+    fetch(`${API_BASE_URL}/products`)
       .then((response) => response.json())
       .then((data) => {
         setProducts(data);
@@ -49,7 +51,7 @@ const Inventory = () => {
     formData.append('image', imageFile);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/products', {
+      const response = await fetch(`${API_BASE_URL}/products`, {
         method: 'POST',
         body: formData
       });
@@ -75,13 +77,12 @@ const Inventory = () => {
     formData.append('stock', newProduct.stock);
     formData.append('category_id', newProduct.category_id);
     
-    // solo se envia la imagen si se seleccionó un archivo nuevo
     if (imageFile) {
       formData.append('image', imageFile);
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/products/${editingProduct.id}`, {
+      const response = await fetch(`${API_BASE_URL}/products/${editingProduct.id}`, {
         method: 'PUT',
         body: formData
       });
@@ -120,7 +121,8 @@ const Inventory = () => {
       alert("No hay stock disponible.");
       return;
     }
-    const response = await fetch('http://127.0.0.1:8000/api/sales', {
+    // CAMBIO 6: Registrar venta en Render
+    const response = await fetch(`${API_BASE_URL}/sales`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ product_id: product.id, quantity: 1 })
