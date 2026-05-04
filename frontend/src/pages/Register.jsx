@@ -16,7 +16,6 @@ export default function Register() {
     setError('');
     
     try {
-      // CAMBIO: Ahora usamos la variable API_BASE_URL para conectar con el backend en Render
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
