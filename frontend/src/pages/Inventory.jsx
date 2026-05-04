@@ -18,12 +18,25 @@ const Inventory = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/categories`)
-      .then(res => res.json())
-      .then(data => setCategories(data))
-      .catch(err => console.error("Error cargando categorías:", err));
-  }, []);
+    const backupCategories = [
+      { id: 1, name: "Collares" },
+      { id: 2, name: "Pulseras" },
+      { id: 3, name: "Zarcillos" }
+    ];
 
+    fetch(`${API_BASE_URL}/categories`)
+      .then(res => {
+        if (!res.ok) throw new Error('Error en servidor');
+        return res.json();
+      })
+      .then(data => {
+        setCategories(Array.isArray(data) ? data : backupCategories);
+      })
+      .catch(err => {
+        console.error("Usando categorías de respaldo:", err);
+        setCategories(backupCategories);
+      });
+  }, []);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/products`)
@@ -33,6 +46,7 @@ const Inventory = () => {
         setLoading(false);
       })
       .catch((error) => {
+        console.error("Error cargando productos:", error);
         setLoading(false);
       });
   }, []);
@@ -61,6 +75,7 @@ const Inventory = () => {
       }
     } catch (err) { 
       console.error("Error de red:", err); 
+      alert("Error al conectar con el servidor.");
     } finally {
       setIsUploading(false);
     }
@@ -121,15 +136,19 @@ const Inventory = () => {
       alert("No hay stock disponible.");
       return;
     }
-    // CAMBIO 6: Registrar venta en Render
-    const response = await fetch(`${API_BASE_URL}/sales`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product_id: product.id, quantity: 1 })
-    });
-    if (response.ok) {
-      alert(`¡Venta de ${product.name} registrada!`);
-      window.location.reload();
+  
+    try {
+      const response = await fetch(`${API_BASE_URL}/sales`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: product.id, quantity: 1 })
+      });
+      if (response.ok) {
+        alert(`¡Venta de ${product.name} registrada!`);
+        window.location.reload();
+      }
+    } catch (error) {
+      alert("Error al registrar la venta.");
     }
   };
 
