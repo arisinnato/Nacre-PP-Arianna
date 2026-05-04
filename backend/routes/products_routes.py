@@ -6,7 +6,7 @@ import requests
 import base64
 
 router = APIRouter(
-    prefix="/api",
+    prefix="",
     tags=["Productos y Categorías"] 
 )
 
