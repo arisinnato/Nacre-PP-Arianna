@@ -1,1 +1,1 @@
-export const API_BASE_URL = "[https://nacre-pp-arianna.onrender.com](https://nacre-pp-arianna.onrender.com)";
+export const API_BASE_URL = "https://nacre-pp-arianna.onrender.com";
