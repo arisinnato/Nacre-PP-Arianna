@@ -10,27 +10,37 @@ router = APIRouter(
 
 @router.post("/register")
 def register_user(user: dict, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.username == user['username']).first()
+
+    db_user = db.query(models.User).filter(models.User.username == user.get('username')).first()
     if db_user:
         raise HTTPException(status_code=400, detail="El usuario ya existe")
     
-    raw_password = str(user['password'])[:72]
+
+    raw_password = str(user.get('password', ''))
+ 
     hashed_password = auth.get_password_hash(raw_password)
     
     new_user = models.User(
-        username=user['username'], 
+        username=user.get('username'), 
         email=user.get('email'), 
         password=hashed_password
     )
-    db.add(new_user)
-    db.commit()
-    return {"message": "Usuario registrado"}
+    
+    try:
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return {"message": "Usuario registrado exitosamente"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al guardar: {str(e)}")
 
 @router.post("/login")
 def login(user: dict, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.username == user['username']).first()
     
-    raw_password = str(user['password'])[:72]
+    db_user = db.query(models.User).filter(models.User.username == user.get('username')).first()
+    
+    raw_password = str(user.get('password', ''))
     
     if not db_user or not auth.verify_password(raw_password, db_user.password):
         raise HTTPException(
