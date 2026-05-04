@@ -3,8 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 import models
 from database import engine, SessionLocal
 from routes import auth_routes, products_routes, sales_routes
-
 from contextlib import asynccontextmanager
+
+
+def seed_categories():
+    db = SessionLocal()
+    try:
+        if db.query(models.Category).count() == 0:
+            print("Sembrando categorías iniciales para Nacre...")
+            for name in ["Collares", "Pulseras", "Zarcillos"]:
+                db.add(models.Category(name=name))
+            db.commit()
+    except Exception as e:
+        print(f"Error en el seeder: {e}")
+    finally:
+        db.close()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -29,6 +42,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#registro de rutas
 app.include_router(auth_routes.router)
 app.include_router(products_routes.router)
 app.include_router(sales_routes.router)
@@ -38,20 +52,5 @@ def read_root():
     return {
         "message": "Bienvenida a la API de Nacre",
         "status": "Online",
-        "version": "2.0"
+        "version": "2.1"
     }
-
-def seed_categories():
-    db = SessionLocal()
-    try:
-        if db.query(models.Category).count() == 0:
-            print("Sembrando categorías iniciales para Nacre...")
-            for name in ["Collares", "Pulseras", "Zarcillos"]:
-                db.add(models.Category(name=name))
-            db.commit()
-    except Exception as e:
-        print(f"Error en el seeder: {e}")
-    finally:
-        db.close()
-
-seed_categories()
