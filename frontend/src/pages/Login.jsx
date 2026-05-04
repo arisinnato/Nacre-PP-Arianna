@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/Logotipo.png';
+import { API_BASE_URL } from '../apiConfig';
 
 export default function Login() {
   const [username, setUsername] = useState('');
