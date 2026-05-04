@@ -20,9 +20,6 @@ def seed_categories():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
-    models.Base.metadata.drop_all(bind=engine)
-
     models.Base.metadata.create_all(bind=engine)
     seed_categories()
     yield
