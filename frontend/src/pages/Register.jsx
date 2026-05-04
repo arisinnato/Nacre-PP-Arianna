@@ -16,25 +16,25 @@ export default function Register() {
     setError('');
     
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      // CAMBIO: Ahora usamos la variable API_BASE_URL para conectar con el backend en Render
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, email, password })
       });
       
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.access_token);
-        navigate('/dashboard');
-        window.location.reload(); 
+        setSuccess(true);
+        setTimeout(() => navigate('/login'), 2000);
       } else {
         const data = await response.json();
-        setError(data.detail || 'Credenciales inválidas');
+        setError(data.detail || 'Error al registrar el usuario');
       }
     } catch (err) {
       setError('Error al conectar con el servidor');
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans py-12">
       <div className="bg-white p-10 shadow-2xl w-full max-w-md border border-gray-100">
