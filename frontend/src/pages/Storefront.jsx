@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; 
 import logo from '../assets/Logotipo.png';
+import { API_BASE_URL } from '../apiConfig';
 
 const Storefront = ({ onAddToCart, openCart, cart }) => {
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState('Todos');
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/products')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-      })
-      .catch(err => console.error("Error cargando productos:", err));
-  }, []);
-
+    useEffect(() => {
+      fetch(`${API_BASE_URL}/products`)
+        .then(res => res.json())
+        .then(data => {
+          setProducts(data);
+        })
+        .catch(err => console.error("Error cargando productos de Nacre:", err));
+    }, []);
+    
   const filteredProducts = category === 'Todos' 
     ? products 
     : products.filter(p => p.category?.name === category);
