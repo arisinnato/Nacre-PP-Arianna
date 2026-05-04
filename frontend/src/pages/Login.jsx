@@ -14,26 +14,27 @@ export default function Login() {
     setError('');
     
     try {
-          const response = await fetch(`${API_BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('token', data.access_token);
-            navigate('/dashboard');
-            window.location.reload(); 
-          } else {
-            const data = await response.json();
-            setError(data.detail || 'Credenciales inválidas');
-          }
-        } catch (err) {
-          setError('Error al conectar con el servidor');
-        }
-      };
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
 
+        if (response.ok) {
+          localStorage.setItem('token', data.access_token);
+          navigate('/dashboard');
+          window.location.reload(); 
+        } else {
+          setError(data.detail || 'Credenciales inválidas');
+        }
+      } catch (err) {
+        console.error("Fallo de red:", err);
+        setError('Error al conectar con el servidor');
+      }
+    };
+    
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
       <div className="bg-white p-10 shadow-2xl w-full max-w-md border border-gray-100">
