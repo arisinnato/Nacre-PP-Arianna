@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/Logotipo.png';
+import { API_BASE_URL } from '../apiConfig';
 
 export default function Register() {
   const [username, setUsername] = useState('');
@@ -15,24 +16,25 @@ export default function Register() {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:8000/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password })
+        body: JSON.stringify({ username, password })
       });
       
       if (response.ok) {
-        setSuccess(true);
-        setTimeout(() => navigate('/login'), 2000);
+        const data = await response.json();
+        localStorage.setItem('token', data.access_token);
+        navigate('/dashboard');
+        window.location.reload(); 
       } else {
         const data = await response.json();
-        setError(data.detail || 'Error al registrar el usuario');
+        setError(data.detail || 'Credenciales inválidas');
       }
     } catch (err) {
       setError('Error al conectar con el servidor');
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans py-12">
       <div className="bg-white p-10 shadow-2xl w-full max-w-md border border-gray-100">
