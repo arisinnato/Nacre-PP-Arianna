@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../apiConfig';
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/sales')
-      .then((response) => response.json())
+    
+    fetch(`${API_BASE_URL}/api/sales/`) 
+      .then((response) => {
+        if (!response.ok) throw new Error('Error al cargar ventas');
+        return response.json();
+      })
       .then((data) => {
         setSales(data);
         setLoading(false);
@@ -17,7 +22,7 @@ const Sales = () => {
       });
   }, []);
 
-const totalRevenue = Array.isArray(sales) ? sales.reduce((acc, sale) => acc + sale.total_price, 0) : 0;
+  const totalRevenue = Array.isArray(sales) ? sales.reduce((acc, sale) => acc + sale.total_price, 0) : 0;
 
   return (
     <>
@@ -54,11 +59,11 @@ const totalRevenue = Array.isArray(sales) ? sales.reduce((acc, sale) => acc + sa
               </tr>
             </thead>
             <tbody>
-              {sales.length > 0 ? (
+              {sales && sales.length > 0 ? (
                 sales.map((sale) => (
                   <tr key={sale.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                     <td className="p-4 text-gray-600">
-                      {new Date(sale.created_at).toLocaleDateString()}
+                      {sale.created_at ? new Date(sale.created_at).toLocaleDateString() : 'Sin fecha'}
                     </td>
                     <td className="p-4 font-mono text-xs text-gray-400">#00{sale.id}</td>
                     <td className="p-4">{sale.quantity} und.</td>
