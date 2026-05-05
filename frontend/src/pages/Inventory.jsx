@@ -137,21 +137,34 @@ const Inventory = () => {
       return;
     }
   
+    const handleSale = async (product) => {
+    if (product.stock <= 0) {
+      alert("No hay stock disponible.");
+      return;
+    }
+  
     try {
-      const response = await fetch(`${API_BASE_URL}/sales`, {
+      // CAMBIO AQUÍ: Agregamos /api antes de /sales
+      const response = await fetch(`${API_BASE_URL}/api/sales/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ product_id: product.id, quantity: 1 })
       });
+
       if (response.ok) {
         alert(`¡Venta de ${product.name} registrada!`);
         window.location.reload();
+      } else {
+        // Esto te ayudará a saber si el error es de stock o de otro tipo
+        const errorData = await response.json();
+        alert(`Error: ${errorData.detail || "No se pudo registrar la venta"}`);
       }
     } catch (error) {
-      alert("Error al registrar la venta.");
+          console.error("Error en la venta:", error);
+          alert("Error al conectar con el servidor.");
+        }
+      };
     }
-  };
-
   return (
     <>
       <header className="flex justify-between items-end mb-12">
