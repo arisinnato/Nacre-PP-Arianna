@@ -5,6 +5,7 @@ from database import engine, SessionLocal
 from routes import auth_routes, products_routes, sales_routes
 from contextlib import asynccontextmanager
 
+# 1. Configuración de Sembrado (Categories Seeder)
 def seed_categories():
     db = SessionLocal()
     try:
@@ -18,8 +19,10 @@ def seed_categories():
     finally:
         db.close()
 
+# 2. Manejo del Ciclo de Vida (Lifespan)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Esto asegura que las tablas existan en Render antes de iniciar
     models.Base.metadata.create_all(bind=engine)
     seed_categories()
     yield
@@ -29,9 +32,13 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# 3. CONFIGURACIÓN DE CORS (El "Desbloqueador")
+# He añadido "*" para pruebas y asegurado que no falten las barras diagonales
 origins = [
-    "https://nacre.onrender.com",  
-    "http://localhost:5173",         
+    "https://nacre.onrender.com",
+    "https://nacre.onrender.com/",
+    "http://localhost:5173",
+    "*" 
 ]
 
 app.add_middleware(
@@ -42,6 +49,7 @@ app.add_middleware(
     allow_headers=["*"],              
 )
 
+# 4. Inclusión de Rutas (Después del Middleware)
 app.include_router(auth_routes.router)
 app.include_router(products_routes.router)
 app.include_router(sales_routes.router)
