@@ -5,21 +5,43 @@ export const CartModal = ({ isOpen, onClose, cart }) => {
 
   const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-  const enviarWhatsApp = () => {
-    const baseLink = "https://wa.me/584245822186?text=";
-    
-    let detallePedido = "¡Hola! Somos Nacre y este es tu pedido:\n\n";
-    
-    cart.forEach((item) => {
-      detallePedido += `${item.name}\n`;
-      detallePedido += `   Cant: ${item.quantity} x $${item.price.toFixed(2)}\n\n`;
-    });
-    
-    detallePedido += `*Total a pagar: $${total.toFixed(2)}*\n\n`;
-    detallePedido += "¿Me podrían indicar los pasos para concretar el pago?";
+  const enviarWhatsApp = async () => {
+    try {
+      for (const item of cart) {
+        await fetch("https://nacre.onrender.com/api/sales/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            product_id: item.id,
+            quantity: item.quantity,
+            status: "pedido"
+          }),
+        });
+      }
 
-    const linkFinal = baseLink + encodeURIComponent(detallePedido);
-    window.open(linkFinal, '_blank');
+      const baseLink = "https://wa.me/584245822186?text=";
+      let detallePedido = "¡Hola! Somos Nacre y este es tu pedido:\n\n";
+      
+      cart.forEach((item) => {
+        detallePedido += `${item.name}\n`;
+        detallePedido += `   Cant: ${item.quantity} x $${item.price.toFixed(2)}\n\n`;
+      });
+      
+      detallePedido += `*Total a pagar: $${total.toFixed(2)}*\n\n`;
+      detallePedido += "¿Me podrían indicar los pasos para concretar el pago?";
+
+      const linkFinal = baseLink + encodeURIComponent(detallePedido);
+      window.open(linkFinal, '_blank');
+      
+      onClose();
+
+    } catch (error) {
+      console.error("Error al registrar la venta:", error);
+      alert("Hubo un problema al conectar con el servidor, pero puedes contactarnos por WhatsApp directamente.");
+      
+      const linkEmergencia = "https://wa.me/584245822186";
+      window.open(linkEmergencia, '_blank');
+    }
   };
 
   return (
