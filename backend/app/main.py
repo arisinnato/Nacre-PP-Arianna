@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import models
-from database import engine, SessionLocal
-from routes import auth_routes, products_routes, sales_routes
+from backend.app.database import engine, SessionLocal
+from routes import auth_routes, products_routes, sales_routes, category_routes
 from contextlib import asynccontextmanager
 
 
@@ -49,6 +49,7 @@ app.add_middleware(
 app.include_router(auth_routes.router)
 app.include_router(products_routes.router)
 app.include_router(sales_routes.router)
+app.include_router(category_routes.router)
 
 @app.get("/")
 def read_root():

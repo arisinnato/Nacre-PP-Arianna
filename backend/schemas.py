@@ -1,12 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class CategoryOut(BaseModel):
-    id: int
-    name: str
-    class Config:
-        from_attributes = True
-
 
 class ProductOut(BaseModel):
     id: int

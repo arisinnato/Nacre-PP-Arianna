@@ -1,4 +1,4 @@
-from database import engine
+from backend.app.database import engine
 from models import Base
 
 print("Dropping tables...")
