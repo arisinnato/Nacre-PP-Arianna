@@ -8,7 +8,7 @@ export const CartModal = ({ isOpen, onClose, cart }) => {
   const enviarWhatsApp = async () => {
     try {
       for (const item of cart) {
-        await fetch("https://nacre.onrender.com/api/sales/", {
+        await fetch("https://nacre.onrender.com/api/sales", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
