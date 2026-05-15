@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import models
-from backend.app.database import engine, SessionLocal
-from routes import auth_routes, products_routes, sales_routes, category_routes
+from app import models
+from app.database import engine, SessionLocal
+from backend.app.routes import auth_routes, category_routes, products_routes
+from backend.app.routes import sales_routes
 from contextlib import asynccontextmanager
 
 
@@ -11,14 +12,15 @@ def seed_categories():
     try:
         if db.query(models.Category).count() == 0:
             print("Sembrando categorías iniciales para Nacre...")
-            for name in ["Collares", "Pulseras", "Zarcillos"]:
+            categories = ["Collares", "Pulseras", "Zarcillos"]
+            for name in categories:
                 db.add(models.Category(name=name))
             db.commit()
+            print("Categorías sembradas con éxito.")
     except Exception as e:
         print(f"Error en el seeder de categorías: {e}")
     finally:
         db.close()
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -31,13 +33,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-origins = [
-    "https://nacre.onrender.com",
-    "https://nacre.onrender.com/",
-    "http://localhost:5173",
-    "*" 
-]
-
+# Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -46,15 +42,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_routes.router)
-app.include_router(products_routes.router)
-app.include_router(sales_routes.router)
-app.include_router(category_routes.router)
+
+app.include_router(auth_routes.router, prefix="/api")
+app.include_router(products_routes.router, prefix="/api")
+app.include_router(sales_routes.router, prefix="/api")
+app.include_router(category_routes.router, prefix="/api")
 
 @app.get("/")
 def read_root():
     return {
         "message": "Bienvenida a la API de Nacre",
         "status": "Online",
-        "version": "2.1"
+        "version": "2.1",
+        "author": "Arianna"
     }
