@@ -9,7 +9,6 @@ router = APIRouter(
     tags=["Ventas"]
 )
 
-
 @router.get("/") 
 def get_sales(db: Session = Depends(get_db)):
     return sale_service.get_all_sales(db)
@@ -17,11 +16,12 @@ def get_sales(db: Session = Depends(get_db)):
 @router.post("/")
 def create_sale(sale_data: sale_schemas.SaleCreate, db: Session = Depends(get_db)):
     try:
-        return sale_service.create_sale(db, sale_data, status="vendido")
+        # Modificado: Usamos sale_data.status para que acepte tanto "pedido" como "vendido"
+        return sale_service.create_sale(db, sale_data, status=sale_data.status)
     except HTTPException as e:
         raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Error interno al registrar la venta")
+        raise HTTPException(status_code=500, detail=f"Error interno al registrar la venta: {e}")
 
 @router.patch("/{sale_id}/status")
 def update_status(sale_id: int, new_status: str, db: Session = Depends(get_db)):

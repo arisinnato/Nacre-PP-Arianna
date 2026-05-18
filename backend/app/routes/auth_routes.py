@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status 
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-import app.models, auth, backend.app.schemas as schemas
+from app.database import get_db
+from app import models, schemas
+import auth 
 
 router = APIRouter(
     prefix="/auth",
@@ -10,7 +11,7 @@ router = APIRouter(
 
 @router.post("/register")
 def register_user(user: dict, db: Session = Depends(get_db)):
-    db_user = db.query(app.models.User).filter(app.models.User.username == user.get('username')).first()
+    db_user = db.query(models.User).filter(models.User.username == user.get('username')).first()
     if db_user:
         raise HTTPException(status_code=400, detail="El usuario ya existe")
     
@@ -37,7 +38,7 @@ def register_user(user: dict, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(user: dict, db: Session = Depends(get_db)):
-    db_user = db.query(app.models.User).filter(app.models.User.username == user.get('username')).first()
+    db_user = db.query(models.User).filter(models.User.username == user.get('username')).first()
     
     raw_password = str(user.get('password', '')).strip()
     
