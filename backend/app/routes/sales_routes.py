@@ -16,7 +16,6 @@ def get_sales(db: Session = Depends(get_db)):
 @router.post("/")
 def create_sale(sale_data: sale_schemas.SaleCreate, db: Session = Depends(get_db)):
     try:
-        # Modificado: Usamos sale_data.status para que acepte tanto "pedido" como "vendido"
         return sale_service.create_sale(db, sale_data, status=sale_data.status)
     except HTTPException as e:
         raise e
