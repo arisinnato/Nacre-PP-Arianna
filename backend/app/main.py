@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app import models
-from app.database import engine, SessionLocal
+from app.database import engine, SessionLocal, Base
 from app.routes import auth_routes, category_routes, products_routes, sales_routes
 from contextlib import asynccontextmanager
 
@@ -22,7 +22,7 @@ def seed_categories():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    models.Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     seed_categories()
     yield
 
