@@ -28,13 +28,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Nacre API", 
-    lifespan=lifespan
+    redirect_slashes=False
 )
 
-# Configuración de CORS
+origins = [
+    "http://localhost:5173",                     
+    "https://nacre-pp-arianna.onrender.com",
+    "https://nacre.onrender.com"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins, 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,6 +49,7 @@ app.include_router(auth_routes.router)
 app.include_router(products_routes.router)
 app.include_router(sales_routes.router)
 app.include_router(category_routes.router)
+
 @app.get("/")
 def read_root():
     return {
