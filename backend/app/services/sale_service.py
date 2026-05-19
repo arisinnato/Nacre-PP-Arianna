@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.sale import Sale
-from app.models import Product
+from app.models.products import Product
 from app.schemas.sale_schemas import SaleCreate
 from fastapi import HTTPException
 
