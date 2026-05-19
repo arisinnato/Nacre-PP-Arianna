@@ -17,6 +17,7 @@ const Inventory = () => {
   const [categories, setCategories] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
 
+  
   useEffect(() => {
     const backupCategories = [
       { id: 1, name: "Collares" },
@@ -137,14 +138,7 @@ const Inventory = () => {
       return;
     }
   
-    const handleSale = async (product) => {
-    if (product.stock <= 0) {
-      alert("No hay stock disponible.");
-      return;
-    }
-  
     try {
-      // CAMBIO AQUÍ: Agregamos /api antes de /sales
       const response = await fetch(`${API_BASE_URL}/api/sales/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -152,19 +146,18 @@ const Inventory = () => {
       });
 
       if (response.ok) {
-        alert(`¡Venta de ${product.name} registrada!`);
+        alert(`¡Venta de ${product.name} registrada con éxito! 💍`);
         window.location.reload();
       } else {
-        // Esto te ayudará a saber si el error es de stock o de otro tipo
         const errorData = await response.json();
         alert(`Error: ${errorData.detail || "No se pudo registrar la venta"}`);
       }
     } catch (error) {
-          console.error("Error en la venta:", error);
-          alert("Error al conectar con el servidor.");
-        }
-      };
+      console.error("Error en la venta:", error);
+      alert("Error al conectar con el servidor.");
     }
+  };
+
   return (
     <>
       <header className="flex justify-between items-end mb-12">
