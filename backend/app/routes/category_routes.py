@@ -4,7 +4,7 @@ from app.database import get_db
 from app.schemas import category_schemas 
 from app.services import category_services
 
-router = APIRouter(prefix="/api", tags=["Categorías"])
+router = APIRouter(prefix="/categories", tags=["Categorías"])
 
 @router.get("/", response_model=list[category_schemas.Category])
 def read_categories(db: Session = Depends(get_db)):

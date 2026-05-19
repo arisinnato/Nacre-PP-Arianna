@@ -4,10 +4,7 @@ from app.database import get_db
 from app.schemas import sale_schemas
 from app.services import sale_service
 
-router = APIRouter(
-    prefix="/api", 
-    tags=["Ventas"]
-)
+router = APIRouter(prefix="/sales", tags=["Ventas"])
 
 @router.get("/") 
 def get_sales(db: Session = Depends(get_db)):
