@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models.sale import Sale, Product
+from app.models.sale import Sale
+from app.models.products import Product
 from fastapi import HTTPException
 
 def get_all_sales(db: Session):
