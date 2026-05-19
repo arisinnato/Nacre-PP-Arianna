@@ -5,21 +5,15 @@ from app.schemas.sale_schemas import SaleCreate
 from fastapi import HTTPException
 
 def create_sale(db: Session, sale: SaleCreate):
-
     db_product = db.query(Product).filter(Product.id == sale.product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="La pieza de joyería no fue encontrada.")
         
-    # 2. Validar que tengamos suficiente stock para procesar la venta
     if db_product.stock < sale.quantity:
         raise HTTPException(status_code=400, detail="No hay suficiente stock disponible de esta pieza.")
 
-    # 3. Descontar las unidades vendidas del inventario
     db_product.stock -= sale.quantity
 
-    # 4. Registrar la transacción en la tabla de ventas
-    # NOTA: Eliminamos por completo cualquier intento de buscar 'sale.status' 
-    # para evitar el error interno 500.
     db_sale = Sale(
         product_id=sale.product_id,
         quantity=sale.quantity,
