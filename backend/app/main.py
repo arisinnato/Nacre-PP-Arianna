@@ -27,8 +27,7 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(
-    title="Nacre API", 
-    redirect_slashes=False
+    title="Nacre API"
 )
 
 origins = [
