@@ -1,10 +1,19 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas import sale_schemas
 from app.services import sale_service
 
 router = APIRouter(prefix="/api/sales", tags=["Ventas"])
+
+@router.options("")
+@router.options("/")
+def options_sales(response: Response):
+    response.headers["Access-Control-Allow-Origin"] = "https://nacre.onrender.com"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
 
 @router.get("") 
 def get_sales(db: Session = Depends(get_db)):
