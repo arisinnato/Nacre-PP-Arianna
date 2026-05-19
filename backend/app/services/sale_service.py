@@ -19,8 +19,8 @@ def create_sale(db: Session, sale: SaleCreate):
     db_sale = Sale(
         product_id=sale.product_id,
         quantity=sale.quantity,
-        total_price=db_product.price * sale.quantity,
-        status="completed"
+        total_price=db_product.price * sale.quantity
+        #status="completed"
     )
     
     db.add(db_sale)
