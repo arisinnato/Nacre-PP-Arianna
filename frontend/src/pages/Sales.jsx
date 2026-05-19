@@ -6,13 +6,13 @@ const Sales = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/sales`) 
+    fetch(`${API_BASE_URL}/api/sales/`) 
       .then((response) => {
         if (!response.ok) throw new Error('Error al cargar ventas');
         return response.json();
       })
       .then((data) => {
-        console.log("Datos de ventas recibidos:", data); // Log útil para revisar en la consola
+        console.log("Datos de ventas recibidos:", data);
         setSales(Array.isArray(data) ? data : []);
         setLoading(false);
       })
