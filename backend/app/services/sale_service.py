@@ -2,36 +2,31 @@ from sqlalchemy.orm import Session
 from app.models.sale import Sale
 from app.models.products import Product
 from fastapi import HTTPException
+from backend.app.schemas.sale_schemas import SaleCreate
 
 def get_all_sales(db: Session):
     return db.query(Sale).all()
 
-#crear venta. Esta sirve tanto para el dashboard como para whatsapp
-def create_sale(db: Session, sale_data, status: str = "pedido"):
-    product = db.query(Product).filter(Product.id == sale_data.product_id).first()
-    
-    if not product:
+def create_sale(db: Session, sale: SaleCreate):
+    db_product = db.query(Product).filter(Product.id == sale.product_id).first()
+    if not db_product:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
-    
-    if product.stock < sale_data.quantity:
+        
+    if db_product.stock < sale.quantity:
         raise HTTPException(status_code=400, detail="Stock insuficiente")
-    
-    total = product.price * sale_data.quantity
 
-    new_sale = Sale(
-        product_id=sale_data.product_id,
-        quantity=sale_data.quantity,
-        total_price=total,
-        status=status 
+    db_product.stock -= sale.quantity
+    db_sale = Sale(
+        product_id=sale.product_id,
+        quantity=sale.quantity,
+        total_price=db_product.price * sale.quantity,
+        status="completed"
     )
-
-    product.stock -= sale_data.quantity
-
-    db.add(new_sale)
+    
+    db.add(db_sale)
     db.commit()
-    db.refresh(new_sale)
-    return new_sale
-
+    db.refresh(db_sale)
+    return db_sale
 
 def update_sale_status(db: Session, sale_id: int, new_status: str):
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
