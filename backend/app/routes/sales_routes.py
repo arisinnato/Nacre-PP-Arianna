@@ -6,14 +6,13 @@ from app.services import sale_service
 
 router = APIRouter(prefix="/api/sales", tags=["Ventas"])
 
-@router.get("/") 
+@router.get("") 
 def get_sales(db: Session = Depends(get_db)):
     return sale_service.get_all_sales(db)
 
 @router.post("/")
 def create_sale(sale_data: sale_schemas.SaleCreate, db: Session = Depends(get_db)):
     try:
-        # CORREGIDO: Quitamos 'status=sale_data.status' para eliminar el Error 500
         return sale_service.create_sale(db, sale_data)
     except HTTPException as e:
         raise e
