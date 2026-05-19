@@ -5,7 +5,7 @@ from app.schemas import sale_schemas
 from app.services import sale_service
 
 router = APIRouter(
-    prefix="/api/sales", 
+    prefix="/api", 
     tags=["Ventas"]
 )
 
