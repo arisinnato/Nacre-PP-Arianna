@@ -6,7 +6,7 @@ const Sales = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/sales/`) 
+    fetch(`${API_BASE_URL}/api/sales`) 
       .then((response) => {
         if (!response.ok) throw new Error('Error al cargar ventas');
         return response.json();
