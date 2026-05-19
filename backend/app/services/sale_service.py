@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from app.models.sale import Sale
 from app.models.products import Product
 from fastapi import HTTPException
-from backend.app.schemas.sale_schemas import SaleCreate
+from app.schemas.sale_schemas import SaleCreate
 
 def get_all_sales(db: Session):
     return db.query(Sale).all()
