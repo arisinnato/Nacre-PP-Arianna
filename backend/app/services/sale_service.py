@@ -1,54 +1,33 @@
 from sqlalchemy.orm import Session
 from app.models.sale import Sale
-from app.models.products import Product
-from fastapi import HTTPException
+from app.models.product import Product
 from app.schemas.sale_schemas import SaleCreate
-
-def get_all_sales(db: Session):
-    return db.query(Sale).all()
+from fastapi import HTTPException
 
 def create_sale(db: Session, sale: SaleCreate):
+    # 1. Buscar la pieza en la base de datos para verificar su existencia
     db_product = db.query(Product).filter(Product.id == sale.product_id).first()
     if not db_product:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
+        raise HTTPException(status_code=404, detail="La pieza de joyería no fue encontrada.")
         
+    # 2. Validar que tengamos suficiente stock para procesar la venta
     if db_product.stock < sale.quantity:
-        raise HTTPException(status_code=400, detail="Stock insuficiente")
+        raise HTTPException(status_code=400, detail="No hay suficiente stock disponible de esta pieza.")
 
+    # 3. Descontar las unidades vendidas del inventario
     db_product.stock -= sale.quantity
+
+    # 4. Registrar la transacción en la tabla de ventas
+    # NOTA: Eliminamos por completo cualquier intento de buscar 'sale.status' 
+    # para evitar el error interno 500.
     db_sale = Sale(
         product_id=sale.product_id,
         quantity=sale.quantity,
         total_price=db_product.price * sale.quantity
-        #status="completed"
     )
     
     db.add(db_sale)
     db.commit()
     db.refresh(db_sale)
+    
     return db_sale
-
-def update_sale_status(db: Session, sale_id: int, new_status: str):
-    sale = db.query(Sale).filter(Sale.id == sale_id).first()
-    if not sale:
-        return None
-    
-    sale.status = new_status
-    db.commit()
-    db.refresh(sale)
-    return sale
-
-
-def delete_sale(db: Session, sale_id: int):
-    sale = db.query(Sale).filter(Sale.id == sale_id).first()
-    
-    if not sale:
-        raise HTTPException(status_code=404, detail="Venta no encontrada")
-    
-    
-    if sale.status == "vendido":
-        raise HTTPException(status_code=400, detail="No se pueden eliminar ventas ya completadas")
-    
-    db.delete(sale)
-    db.commit()
-    return True
