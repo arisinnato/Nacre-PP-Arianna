@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
 from app.models.sale import Sale
-from app.models.product import Product
+from app.models.products import Product
 from app.schemas.sale_schemas import SaleCreate
 from fastapi import HTTPException
 
 def create_sale(db: Session, sale: SaleCreate):
-    # 1. Buscar la pieza en la base de datos para verificar su existencia
+
     db_product = db.query(Product).filter(Product.id == sale.product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="La pieza de joyería no fue encontrada.")
