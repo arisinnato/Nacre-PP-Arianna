@@ -25,3 +25,10 @@ def create_sale(db: Session, sale: SaleCreate):
     db.refresh(db_sale)
     
     return db_sale
+
+
+def get_all_sales(db: Session):
+    try:
+        return db.query(Sale).all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {str(e)}")
